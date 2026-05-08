@@ -15,6 +15,7 @@
 Developed by **Marco Baturan**, this project aims to provide a professional, AI-augmented workflow for knowledge engineers and developers working on expert systems. It is completely **open-source**, **free**, and built with a focus on cross-platform compatibility and modern UX.
 
 - **GitHub Repository**: [https://github.com/marcobaturan/CLIPSIDE](https://github.com/marcobaturan/CLIPSIDE)
+- **Post**: [https://getdevworks.hashnode.dev/building-a-modern-clips-ide-in-python-ai-assisted-expert-system-development-on-linux]
 - **License**: MIT (Open Source & Free)
 - **Author**: Marco Baturan
 
