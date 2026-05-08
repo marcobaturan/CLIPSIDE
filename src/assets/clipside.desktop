@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=CLIPSIDE
+Comment=Modern CLIPS Rules IDE with AI Assistant
+Exec=PROJECT_DIR/start.sh
+Icon=PROJECT_DIR/src/assets/icon.png
+Terminal=false
+Categories=Development;IDE;
+Keywords=CLIPS;ExpertSystem;AI;IDE;Python;
+StartupWMClass=CLIPSIDE
