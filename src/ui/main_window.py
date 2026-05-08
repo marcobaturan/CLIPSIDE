@@ -491,10 +491,14 @@ class MainWindow(ctk.CTk):
             "Developed by Marco Baturan\n"
             "GitHub: https://github.com/marcobaturan/CLIPSIDE\n\n"
             "License: MIT (Open Source & Free)\n\n"
+            "Acknowledgements:\n"
+            "• Gary Riley (Creator of CLIPS)\n"
+            "• Matteo Cafasso (Creator of CLIPSPy)\n\n"
             "Powered by:\n"
             "• CLIPSpy (CLIPS 6.41)\n"
             "• CustomTkinter\n"
             "• Ollama (clips-architect-final)\n\n"
             "© 2026 Marco Baturan",
         )
+
 
