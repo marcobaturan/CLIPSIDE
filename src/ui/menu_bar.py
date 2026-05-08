@@ -87,8 +87,7 @@ class MenuBar(tk.Menu):
         m = self._menu("Tools")
         m.add_command(label="Pull AI Model",       command=self._cb.get("pull_model"))
         m.add_command(label="AI Session History",  command=self._cb.get("session_history"))
-        m.add_separator()
-        m.add_command(label="Settings",            command=self._cb.get("settings"))
+
 
     def _add_help_menu(self) -> None:
         m = self._menu("Help")

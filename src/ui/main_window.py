@@ -130,13 +130,13 @@ class MainWindow(ctk.CTk):
             "run":             self._cmd_run,
             "step":            self._cmd_step,
             "clear":           self._cmd_clear,
-            "show_facts":      lambda: self._inspect_tabs.set("Facts"),
-            "show_agenda":     lambda: self._inspect_tabs.set("Agenda"),
-            "show_instances":  lambda: self._inspect_tabs.set("Instances"),
+            "show_facts":      lambda: self._inspect_tabs.set("📋 Facts"),
+            "show_agenda":     lambda: self._inspect_tabs.set("⚡ Agenda"),
+            "show_instances":  lambda: self._inspect_tabs.set("🔷 Instances"),
             "pull_model":      self._cmd_pull_model,
             "session_history": lambda: None,
-            "settings":        lambda: None,
             "manual":          self._cmd_manual,
+
             "about":           self._cmd_about,
         }
         self._menubar = MenuBar(self, callbacks)
