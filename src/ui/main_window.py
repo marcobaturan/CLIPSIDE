@@ -493,12 +493,14 @@ class MainWindow(ctk.CTk):
             "License: MIT (Open Source & Free)\n\n"
             "Acknowledgements:\n"
             "• Gary Riley (Creator of CLIPS)\n"
-            "• Matteo Cafasso (Creator of CLIPSPy)\n\n"
+            "• Matteo Cafasso (Creator of CLIPSPy)\n"
+            "• Tom Schimansky (Creator of CustomTkinter)\n\n"
             "Powered by:\n"
             "• CLIPSpy (CLIPS 6.41)\n"
             "• CustomTkinter\n"
             "• Ollama (clips-architect-final)\n\n"
             "© 2026 Marco Baturan",
         )
+
 
 
