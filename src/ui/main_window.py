@@ -487,9 +487,14 @@ class MainWindow(ctk.CTk):
         messagebox.showinfo(
             "About CLIPSIDE",
             "CLIPSIDE — Modern CLIPS IDE\n"
-            "Version 1.0.0\n\n"
-            "Python · CustomTkinter · CLIPSpy · Ollama\n"
-            "Model: marcobaturan/clips-architect-final\n\n"
-            "CLIPS Rules © Gary Riley\n"
-            "IDE © 2026 Marco Baturan",
+            "Version 0.1.0 (Beta)\n\n"
+            "Developed by Marco Baturan\n"
+            "GitHub: https://github.com/marcobaturan/CLIPSIDE\n\n"
+            "License: MIT (Open Source & Free)\n\n"
+            "Powered by:\n"
+            "• CLIPSpy (CLIPS 6.41)\n"
+            "• CustomTkinter\n"
+            "• Ollama (clips-architect-final)\n\n"
+            "© 2026 Marco Baturan",
         )
+

@@ -8,7 +8,18 @@
 
 ---
 
-## 🎯 Project Vision
+## 📖 About CLIPSIDE
+
+**CLIPSIDE** is a modern, high-performance integrated development environment (IDE) specifically designed for the **CLIPS** (C Language Integrated Production System) rule-based expert system language. 
+
+Developed by **Marco Baturan**, this project aims to provide a professional, AI-augmented workflow for knowledge engineers and developers working on expert systems. It is completely **open-source**, **free**, and built with a focus on cross-platform compatibility and modern UX.
+
+- **GitHub Repository**: [https://github.com/marcobaturan/CLIPSIDE](https://github.com/marcobaturan/CLIPSIDE)
+- **License**: MIT (Open Source & Free)
+- **Author**: Marco Baturan
+
+---
+
 
 CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 - 🖤 Native dark-mode GUI via **CustomTkinter**
