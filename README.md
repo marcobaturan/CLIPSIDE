@@ -101,6 +101,19 @@ bash scripts/setup_env.sh
 
 ---
 
+## 🖥️ Desktop Integration
+
+To add CLIPSIDE to your Applications menu (Development section) and your Desktop, run the following script:
+
+```bash
+bash scripts/install_launcher.sh
+```
+
+This will create a `CLIPSIDE` entry in your system's application launcher and a shortcut on your Desktop for easy access.
+
+
+---
+
 ## 🧪 Test Battery
 
 ```bash
