@@ -1,6 +1,6 @@
-"""Main window — assembles all panels with clear column layout and visual identity."""
-
+from __future__ import annotations
 import os
+
 import subprocess
 import tkinter as tk
 from pathlib import Path
@@ -84,9 +84,11 @@ class MainWindow(ctk.CTk):
 
         self._set_icon()
         self._engine = ClipsEngine(output_callback=self._on_engine_output)
+        self._editor: EditorPanel = None  # Pre-initialize to avoid race conditions
 
         self._build_menu()
         self._build_layout()
+
         self._bind_shortcuts()
 
         self._editor.new_tab()
@@ -366,7 +368,11 @@ class MainWindow(ctk.CTk):
 
     def _on_editor_tab_change(self, path: Optional[str]) -> None:
         """Sync process working directory with the active tab's file location."""
+        if not self._editor:
+            return
+
         if path:
+
             target_dir = os.path.dirname(path)
             if os.path.isdir(target_dir):
                 os.chdir(target_dir)

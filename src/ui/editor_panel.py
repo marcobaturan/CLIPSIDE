@@ -60,7 +60,9 @@ class EditorTab:
             padx=6, pady=4,
         )
         self._text.pack(side="left", fill="both", expand=True)
+        self._text.config(state="normal")
         scrollbar.configure(command=self._text.yview)
+
 
         # Bind events
         self._text.bind("<KeyRelease>", self._on_key_release)
@@ -134,6 +136,13 @@ class EditorTab:
         self._text.insert("insert", text)
         self._schedule_highlight()
 
+    def destroy(self) -> None:
+        """Cleanup pending jobs."""
+        if self._highlight_job:
+            self._parent.after_cancel(self._highlight_job)
+            self._highlight_job = None
+
+
 
 class EditorPanel(ctk.CTkFrame):
     """Multi-tab editor panel hosting multiple EditorTab instances."""
@@ -158,18 +167,31 @@ class EditorPanel(ctk.CTkFrame):
     def _handle_tab_change(self) -> None:
         if self._on_tab_change:
             tab = self.get_active_tab()
-            self._on_tab_change(tab.path if tab else None)
+            if tab:
+                tab._text.focus_set()
+                self._on_tab_change(tab.path)
+            else:
+                self._on_tab_change(None)
+
 
     def new_tab(self, title: str = "Untitled", content: str = "", path: Optional[str] = None) -> str:
-        """Open a new tab and return its key."""
+        """Open a new tab and return its key. If it exists, switch to it."""
         if not title or title == "Untitled":
             self._counter += 1
             title = f"Untitled-{self._counter}"
+            
+        if title in self._tabs:
+            self._notebook.set(title)
+            self._handle_tab_change()
+            return title
+
         tab = EditorTab(self._notebook, title, content, path)
         self._tabs[title] = tab
         self._notebook.set(title)
+        tab._text.focus_set()
         self._handle_tab_change()
         return title
+
 
     def get_active_tab(self) -> Optional[EditorTab]:
         """Return the currently visible EditorTab."""
@@ -207,7 +229,9 @@ class EditorPanel(ctk.CTkFrame):
         """Close the currently active tab."""
         name = self._notebook.get()
         if name in self._tabs:
+            tab = self._tabs.pop(name)
+            tab.destroy()
             self._notebook.delete(name)
-            del self._tabs[name]
             self._handle_tab_change()
+
 
