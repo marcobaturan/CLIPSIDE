@@ -585,7 +585,7 @@ class MainWindow(ctk.CTk):
         messagebox.showinfo(
             "About CLIPSIDE",
             "CLIPSIDE — Modern CLIPS IDE\n"
-            "Version 0.1.0 (Beta)\n\n"
+            "Version 0.1.3 (Beta)\n\n"
             "Developed by Marco Baturan\n"
             "GitHub: https://github.com/marcobaturan/CLIPSIDE\n\n"
             "License: MIT (Open Source & Free)\n\n"
