@@ -18,6 +18,7 @@ from src.ui.agenda_panel import AgendaPanel, InstancePanel
 from src.ui.ai_panel import AiPanel
 from src.ui.file_explorer import FileExplorer
 from src.ui.menu_bar import MenuBar
+from CTkToolTip import CTkToolTip
 
 # --- Project State ---
 _PROJECT_ROOT = cfg.get_last_root()
@@ -49,13 +50,18 @@ def _panel_header(parent, icon: str, label: str, colour: str, actions: list = No
     ).pack(side="left", padx=6, pady=4)
 
     if actions:
-        for btn_icon, btn_cmd in reversed(actions):
-            ctk.CTkButton(
+        for item in reversed(actions):
+            btn_icon, btn_cmd = item[0], item[1]
+            tooltip_msg = item[2] if len(item) > 2 else None
+            btn = ctk.CTkButton(
                 bar, text=btn_icon, width=24, height=22,
                 fg_color="transparent", hover_color=_BG_DARK,
                 font=ctk.CTkFont(size=14),
                 command=btn_cmd,
-            ).pack(side="right", padx=2, pady=4)
+            )
+            btn.pack(side="right", padx=2, pady=4)
+            if tooltip_msg:
+                CTkToolTip(btn, message=tooltip_msg, delay=0.8, alpha=0.92, bg_color="#1F2937", text_color="#EEFFFF")
             
     return bar
 
@@ -191,12 +197,12 @@ class MainWindow(ctk.CTk):
         _panel_header(
             editor_header_container, "✏️", "Editor", _GREEN,
             actions=[
-                ("📁", self._toggle_left_panel),
-                ("💾", self._cmd_save),
-                ("▶",  self._cmd_run),
-                ("🔨", self._cmd_build_buffer),
-                ("🔍", self._toggle_right_panel),
-                ("✖",  self._cmd_close),
+                ("📁", self._toggle_left_panel, "Toggle Explorer"),
+                ("💾", self._cmd_save, "Save"),
+                ("▶",  self._cmd_run, "Run"),
+                ("🔨", self._cmd_build_buffer, "Build"),
+                ("🔍", self._toggle_right_panel, "Toggle Inspector"),
+                ("✖",  self._cmd_close, "Close file"),
             ]
         )
 
@@ -224,9 +230,9 @@ class MainWindow(ctk.CTk):
         _panel_header(
             explorer_frame, "📁", "Explorer", _AMBER,
             actions=[
-                ("⟳", self._refresh_explorer),
-                ("＋", self._cmd_new_folder),
-                ("📄", self._cmd_new_file_in_context),
+                ("⟳", self._refresh_explorer, "Refresh"),
+                ("＋", self._cmd_new_folder, "New folder"),
+                ("📄", self._cmd_new_file_in_context, "New file"),
             ]
         )
         self._explorer = FileExplorer(explorer_frame, root_dir=_PROJECT_ROOT, on_open_file=self._open_file_from_explorer, on_folder_double_click=self._cmd_new_folder, show_header=False, folders_only=False)

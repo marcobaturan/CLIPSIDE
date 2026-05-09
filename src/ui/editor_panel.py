@@ -139,7 +139,7 @@ class EditorTab:
     def destroy(self) -> None:
         """Cleanup pending jobs."""
         if self._highlight_job:
-            self._parent.after_cancel(self._highlight_job)
+            self._text.after_cancel(self._highlight_job)
             self._highlight_job = None
 
 
