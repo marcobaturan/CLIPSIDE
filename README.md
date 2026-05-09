@@ -30,6 +30,8 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 - 🔁 Interactive **CLIPS REPL** console
 - 🌲 File explorer, multi-tab editor, full menu bar
 - 💾 Persistence of project workspace and last folder
+- 📐 **Collapsible panels** — hide/show Explorer and Inspector to maximise editor space
+- ↔️ **Half-screen friendly** — window shrinks down to 680px for side-by-side workflow
 
 ---
 
@@ -47,7 +49,7 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 
 ---
 
-## 🚀 Version: v0.1.0
+## 🚀 Version: v0.2.0
 
 See [CHANGELOG.md](CHANGELOG.md) for full release details.
 
@@ -144,6 +146,20 @@ python -m pytest tests/ -v --tb=short
 | `F6` | Run inference engine |
 | `F7` | Step (one rule) |
 | `Ctrl+Return` | Send AI chat message |
+
+## 📐 Panel Collapse (v0.2.0)
+
+Collapse the side panels with a single click to give the editor maximum space:
+
+| Icon | Location | Action |
+|---|---|---|
+| 📁 | Editor header (leftmost) | Toggle **Explorer** / **AI Assistant** panel |
+| 🔍 | Editor header (right side) | Toggle **Inspector** panel |
+| `Ctrl+L` | Keyboard | Toggle left panel |
+| `Ctrl+R` | Keyboard | Toggle right panel |
+| `Ctrl+M` | Keyboard | Toggle **all** panels (maximise editor) |
+
+> 💡 The IDE remembers each panel's width when collapsed. Drag the splitters to resize freely. Minimum window size is 680px — perfect for half a laptop screen.
 
 ---
 

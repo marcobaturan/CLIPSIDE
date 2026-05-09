@@ -1,4 +1,4 @@
-# CLIPSIDE — User Manual (v0.1.0)
+# CLIPSIDE — User Manual (v0.2.0)
 
 ## Starting the IDE
 
@@ -31,6 +31,24 @@ A splash screen appears while modules load, then the main window opens.
 | **Editor** | Multi-tab editor with syntax highlighting and close buttons (✖). |
 | **Inspector** | Live tabs for Facts, Agenda, and Instances. |
 | **Console** | Interactive CLIPS REPL. |
+
+---
+
+## Collapsible Panels (v0.2.0)
+
+You can hide/show the side panels to give more room to the editor and console:
+
+| Method | Action |
+|---|---|
+| Click **📁** in the Editor header | Toggle **left** panel (Explorer + AI) |
+| Click **🔍** in the Editor header | Toggle **right** panel (Inspector) |
+| `Ctrl+L` | Keyboard shortcut for left panel |
+| `Ctrl+R` | Keyboard shortcut for right panel |
+| `Ctrl+M` | Toggle **all** panels — gives the editor full window width |
+
+Each panel **remembers its width** when you collapse it. Drag the splitters between columns to resize freely.
+
+> 💡 The window can shrink as small as **680×520 px** — ideal for placing the IDE on one half of a laptop screen with a browser or documentation on the other.
 
 ---
 
@@ -75,6 +93,9 @@ Use **Ctrl+B** or the 🔨 icon. This saves the current editor content to a temp
 | `Ctrl+S` | Save current file |
 | `Ctrl+W` | Close current tab |
 | `Ctrl+B` | Build Buffer (Load constructs) |
+| `Ctrl+L` | Toggle **left** panel (Explorer/AI) |
+| `Ctrl+R` | Toggle **right** panel (Inspector) |
+| `Ctrl+M` | Toggle **all** panels (maximise editor) |
 | `F5` | Reset engine |
 | `F6` | Run engine |
 | `F7` | Step engine |

@@ -79,7 +79,7 @@ class MainWindow(ctk.CTk):
 
         self.title("CLIPSIDE — Modern CLIPS IDE")
         self.geometry("1440x880")
-        self.minsize(960, 620)
+        self.minsize(680, 520)
         self.configure(fg_color=_BG_DARK)
 
         self._set_icon()
@@ -87,6 +87,13 @@ class MainWindow(ctk.CTk):
         self._editor: EditorPanel = None  # Pre-initialize to avoid race conditions
 
         self._build_menu()
+        
+        # Panel visibility and sizing
+        self._left_visible = True
+        self._right_visible = True
+        self._left_width = 320
+        self._right_width = 300
+        
         self._build_layout()
 
         self._bind_shortcuts()
@@ -153,30 +160,30 @@ class MainWindow(ctk.CTk):
         self._status_bar = self._build_status_bar()
 
         # === 1. TOP-LEVEL CONTAINERS ===
-        h_pane = tk.PanedWindow(
+        self._h_pane = tk.PanedWindow(
             self, orient="horizontal",
             bg=_BG_DARK, sashwidth=5, sashrelief="flat",
             sashpad=0,
         )
-        h_pane.pack(fill="both", expand=True, padx=4, pady=(4, 0))
+        self._h_pane.pack(fill="both", expand=True, padx=4, pady=(4, 0))
 
         # Column containers (Outer)
-        left_outer = ctk.CTkFrame(h_pane, fg_color=_BORDER, corner_radius=6)
-        centre_outer = ctk.CTkFrame(h_pane, fg_color=_BORDER, corner_radius=6)
-        right_outer = ctk.CTkFrame(h_pane, fg_color=_BORDER, corner_radius=6)
+        self._left_panel = ctk.CTkFrame(self._h_pane, fg_color=_BORDER, corner_radius=6)
+        self._center_panel = ctk.CTkFrame(self._h_pane, fg_color=_BORDER, corner_radius=6)
+        self._right_panel = ctk.CTkFrame(self._h_pane, fg_color=_BORDER, corner_radius=6)
 
-        h_pane.add(left_outer, minsize=240, width=320)
-        h_pane.add(centre_outer, minsize=400)
-        h_pane.add(right_outer, minsize=240, width=300)
+        self._h_pane.add(self._left_panel, minsize=140, width=self._left_width)
+        self._h_pane.add(self._center_panel, minsize=280)
+        self._h_pane.add(self._right_panel, minsize=140, width=self._right_width)
 
         # Column containers (Inner)
-        left_inner = ctk.CTkFrame(left_outer, fg_color=_BG_MID, corner_radius=0)
+        left_inner = ctk.CTkFrame(self._left_panel, fg_color=_BG_MID, corner_radius=0)
         left_inner.pack(fill="both", expand=True, padx=1, pady=(0, 1))
         
-        centre_inner = ctk.CTkFrame(centre_outer, fg_color=_BG_MID, corner_radius=0)
+        centre_inner = ctk.CTkFrame(self._center_panel, fg_color=_BG_MID, corner_radius=0)
         centre_inner.pack(fill="both", expand=True, padx=1, pady=(0, 1))
         
-        right_inner = ctk.CTkFrame(right_outer, fg_color=_BG_MID, corner_radius=0)
+        right_inner = ctk.CTkFrame(self._right_panel, fg_color=_BG_MID, corner_radius=0)
         right_inner.pack(fill="both", expand=True, padx=1, pady=(0, 1))
 
         # === 2. CENTRE COLUMN (Editor) ===
@@ -184,10 +191,12 @@ class MainWindow(ctk.CTk):
         _panel_header(
             editor_header_container, "✏️", "Editor", _GREEN,
             actions=[
-                ("✖",  self._cmd_close),
-                ("🔨", self._cmd_build_buffer),
-                ("▶",  self._cmd_run),
+                ("📁", self._toggle_left_panel),
                 ("💾", self._cmd_save),
+                ("▶",  self._cmd_run),
+                ("🔨", self._cmd_build_buffer),
+                ("🔍", self._toggle_right_panel),
+                ("✖",  self._cmd_close),
             ]
         )
 
@@ -277,6 +286,29 @@ class MainWindow(ctk.CTk):
         self.bind("<F6>",        lambda _: self._cmd_run())
         self.bind("<F7>",        lambda _: self._cmd_step())
 
+        # Improved panel toggle shortcuts
+        self.bind("<Control-l>", lambda _: self._toggle_left_panel())  # Left panel toggle
+        self.bind("<Control-r>", lambda _: self._toggle_right_panel())  # Right panel toggle
+        self.bind("<Control-m>", lambda _: self.toggle_all_panels())  # Max/Minimize panels
+
+    def toggle_all_panels(self) -> None:
+        """Toggle all panels for maximum editor space."""
+        if self._left_visible or self._right_visible:
+            # If any panel is visible, hide all
+            self._left_visible = False
+            self._right_visible = False
+            try:
+                self._h_pane.forget(self._left_panel)
+                self._h_pane.forget(self._right_panel)
+            except: pass
+            self._set_status("All panels hidden")
+        else:
+            # If all panels were hidden, restore them
+            self._left_visible = True
+            self._right_visible = True
+            self._refresh_h_pane()
+            self._set_status("All panels restored")
+
     # ------------------------------------------------------------------
     # Engine commands
     # ------------------------------------------------------------------
@@ -360,6 +392,60 @@ class MainWindow(ctk.CTk):
 
     def _on_engine_output(self, message: str) -> None:
         self._console.append(message)
+
+    # ------------------------------------------------------------------
+    # Panel toggles
+    # ------------------------------------------------------------------
+
+    def _toggle_left_panel(self) -> None:
+        """Toggle left column visibility with improved width preservation."""
+        if self._left_visible:
+            try:
+                self._left_width = max(140, int(self._h_pane.panecget(self._left_panel, "width")))
+            except: 
+                self._left_width = 200
+            
+            self._h_pane.forget(self._left_panel)
+            self._left_visible = False
+        else:
+            self._left_visible = True
+            self._refresh_h_pane()
+        
+        self._set_status(f"{'Hidden' if not self._left_visible else 'Shown'} Explorer")
+
+    def _toggle_right_panel(self) -> None:
+        """Toggle right column visibility with improved width preservation."""
+        if self._right_visible:
+            try:
+                self._right_width = max(140, int(self._h_pane.panecget(self._right_panel, "width")))
+            except: 
+                self._right_width = 200
+            
+            self._h_pane.forget(self._right_panel)
+            self._right_visible = False
+        else:
+            self._right_visible = True
+            self._refresh_h_pane()
+        
+        self._set_status(f"{'Hidden' if not self._right_visible else 'Shown'} Inspector")
+
+    def _refresh_h_pane(self) -> None:
+        """Re-add panels with flexible sizing for half-screen support."""
+        total_width = self.winfo_width()
+        for p in [self._left_panel, self._center_panel, self._right_panel]:
+            try:
+                self._h_pane.forget(p)
+            except: pass
+
+        if self._left_visible:
+            w = min(self._left_width, max(140, int(total_width * 0.3)))
+            self._h_pane.add(self._left_panel, minsize=140, width=w)
+
+        self._h_pane.add(self._center_panel, minsize=280)
+
+        if self._right_visible:
+            w = min(self._right_width, max(140, int(total_width * 0.3)))
+            self._h_pane.add(self._right_panel, minsize=140, width=w)
 
     def _refresh_inspectors(self) -> None:
         self._facts_panel.update_facts(self._engine.get_facts())

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-05-09
+
+### Added
+- **Collapsible panels**: Left panel (Explorer/AI) and right panel (Inspector) can now be hidden/shown independently.
+  - 📁 icon in the Editor header toggles the left panel.
+  - 🔍 icon in the Editor header toggles the right panel.
+  - `Ctrl+L` / `Ctrl+R` keyboard shortcuts for left/right panel toggle.
+  - `Ctrl+M` toggles **all** panels at once for maximum editor space.
+- **Half-screen support**: Minimum window size reduced to 680×520 px, letting the IDE sit comfortably on one side of a laptop screen while a browser or manual occupies the other.
+- **Width memory**: Each panel remembers its last width when collapsed and restores it on re-open.
+
+### Changed
+- Panel `minsize` values lowered from 240→140 px (side panels) and 400→280 px (center editor) to allow more aggressive resizing.
+- `_refresh_h_pane()` simplified for smoother dynamic layout recalculation.
+
 ## [0.1.0] - 2026-05-08
 
 ### Added
