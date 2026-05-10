@@ -96,7 +96,7 @@ CLIPSIDE/
 ## 🚀 Automated Installation
 
 ```bash
-git clone <your-repo-url> CLIPSIDE
+gh repo clone marcobaturan/CLIPSIDE
 cd CLIPSIDE
 bash scripts/setup_env.sh
 ```
