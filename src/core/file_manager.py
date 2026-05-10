@@ -85,3 +85,17 @@ def confirm_discard(parent=None) -> bool:
         "You have unsaved changes. Discard them?",
         parent=parent,
     )
+
+
+def delete_path(path: str, parent=None) -> bool:
+    """Delete a file or directory. Returns True on success."""
+    try:
+        if os.path.isdir(path):
+            import shutil
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+        return True
+    except Exception as exc:
+        messagebox.showerror("Delete Error", str(exc), parent=parent)
+        return False

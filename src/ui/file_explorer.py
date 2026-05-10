@@ -4,13 +4,17 @@ import os
 import customtkinter as ctk
 import tkinter as tk
 from pathlib import Path
+from tkinter import messagebox
 from typing import Callable, Optional
+
+from src.core import file_manager as fm
 
 
 class FileExplorer(ctk.CTkFrame):
     """
     Minimal file tree explorer rooted at a given directory.
     Double-clicking a .clp file fires the on_open_file callback.
+    Right-click shows a context menu with delete option.
     """
 
     def __init__(
@@ -30,6 +34,7 @@ class FileExplorer(ctk.CTkFrame):
         self._show_header = show_header
         self._folders_only = folders_only
         self._build()
+        self._build_context_menu()
         self.refresh()
 
     def _build(self) -> None:
@@ -59,8 +64,39 @@ class FileExplorer(ctk.CTkFrame):
         scrollbar.pack(side="right", fill="y")
 
         self._tree.bind("<Double-Button-1>", self._on_double_click)
+        self._tree.bind("<Button-3>", self._on_right_click)
 
         self._path_map: dict[int, str] = {}
+
+    def _build_context_menu(self) -> None:
+        self._context_menu = tk.Menu(
+            self, tearoff=False,
+            bg="#1F2937", fg="#EEFFFF",
+            activebackground="#1F6FEB", activeforeground="#FFFFFF",
+            font=("Courier New", 10),
+        )
+        self._context_menu.add_command(label="🗑 Delete", command=self._delete_selected)
+
+    def _on_right_click(self, event) -> None:
+        idx = self._tree.nearest(event.y)
+        if idx >= 0:
+            self._tree.selection_clear(0, "end")
+            self._tree.selection_set(idx)
+            self._context_menu.tk_popup(event.x_root, event.y_root)
+
+    def _delete_selected(self) -> None:
+        path = self.get_selected_path()
+        if not path:
+            return
+        name = os.path.basename(path)
+        kind = "folder" if os.path.isdir(path) else "file"
+        if not messagebox.askyesno(
+            "Confirm Delete",
+            f"Delete {kind} '{name}' permanently?",
+        ):
+            return
+        if fm.delete_path(path, parent=self):
+            self.refresh()
 
     def update_root(self, new_root: str) -> None:
         """Update the root directory and refresh the view."""

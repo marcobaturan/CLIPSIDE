@@ -27,7 +27,7 @@ def _load_modules(splash: SplashScreen) -> None:
     import src.ui.main_window     # noqa: F401
 
     splash.set_progress(1.0, "Ready!")
-    splash.after(400, splash.close)
+    splash.after(3000, splash.close)
 
 
 def main() -> None:
@@ -40,7 +40,7 @@ def main() -> None:
 
     splash = SplashScreen(root)
     root.after(100, lambda: _load_modules(splash))
-    root.after(2200, lambda: _reveal(root))
+    root.after(3400, lambda: _reveal(root))
     root.mainloop()
 
 

@@ -52,7 +52,14 @@ class SplashScreen(ctk.CTkToplevel):
             text="Modern Expert System IDE",
             font=ctk.CTkFont(size=12),
             text_color="#546E7A",
-        ).pack(pady=(2, 16))
+        ).pack(pady=(2, 4))
+
+        ctk.CTkLabel(
+            self,
+            text="v0.2.0",
+            font=ctk.CTkFont(size=10),
+            text_color="#1F6FEB",
+        ).pack(pady=(0, 16))
 
         # Progress bar
         self._progress = ctk.CTkProgressBar(
