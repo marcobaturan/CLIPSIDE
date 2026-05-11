@@ -68,11 +68,18 @@ class ConsolePanel(ctk.CTkFrame):
         # Input row
         input_frame = ctk.CTkFrame(self, fg_color="#161B22", height=36)
         input_frame.pack(fill="x")
-        ctk.CTkLabel(
+        self._prompt_label = ctk.CTkLabel(
             input_frame, text="CLIPS> ",
             font=ctk.CTkFont(family="Courier New", size=12),
             text_color="#00FF88",
-        ).pack(side="left", padx=(8, 0))
+        )
+        self._prompt_label.pack(side="left", padx=(8, 0))
+        self._dir_label = ctk.CTkLabel(
+            input_frame, text="",
+            font=ctk.CTkFont(size=9),
+            text_color="#546E7A",
+        )
+        self._dir_label.pack(side="left", padx=(4, 0))
         self._entry = ctk.CTkEntry(
             input_frame,
             fg_color="#0D1117", border_color="#1F6FEB",
@@ -131,6 +138,10 @@ class ConsolePanel(ctk.CTkFrame):
             self._output.insert("end", text)
         self._output.see("end")
         self._output.config(state="disabled")
+
+    def set_context_dir(self, path: str) -> None:
+        """Show the current working directory context next to the prompt."""
+        self._dir_label.configure(text=f"[{path}]")
 
     def clear(self) -> None:
         """Clear the output area."""

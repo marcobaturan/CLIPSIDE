@@ -104,6 +104,7 @@ class MainWindow(ctk.CTk):
 
         self._bind_shortcuts()
 
+        self._context_dir = _PROJECT_ROOT
         self._editor.new_tab()
 
     # ------------------------------------------------------------------
@@ -389,6 +390,7 @@ class MainWindow(ctk.CTk):
 
     def _handle_console_command(self, cmd: str) -> None:
         try:
+            os.chdir(self._context_dir)
             result = self._engine.eval(cmd)
             if result is not None:
                 self._console.append(f"{result}\n")
@@ -464,14 +466,17 @@ class MainWindow(ctk.CTk):
             return
 
         if path:
-
             target_dir = os.path.dirname(path)
             if os.path.isdir(target_dir):
-                os.chdir(target_dir)
+                self._context_dir = target_dir
+                os.chdir(self._context_dir)
                 self._set_status(f"Context: {os.path.basename(target_dir)}")
+                self._console.set_context_dir(target_dir)
         else:
-            os.chdir(_PROJECT_ROOT)
+            self._context_dir = _PROJECT_ROOT
+            os.chdir(self._context_dir)
             self._set_status("Context: Project Root")
+            self._console.set_context_dir(self._context_dir)
 
     # ------------------------------------------------------------------
     # File commands
@@ -585,7 +590,7 @@ class MainWindow(ctk.CTk):
         messagebox.showinfo(
             "About CLIPSIDE",
             "CLIPSIDE — Modern CLIPS IDE\n"
-            "Version 0.2.0 (Beta)\n\n"
+            "Version 0.3.0 (Beta)\n\n"
             "Developed by Marco Baturan\n"
             "GitHub: https://github.com/marcobaturan/CLIPSIDE\n\n"
             "License: MIT (Open Source & Free)\n\n"

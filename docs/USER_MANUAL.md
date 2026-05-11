@@ -1,4 +1,4 @@
-# CLIPSIDE — User Manual (v0.2.0)
+# CLIPSIDE — User Manual (v0.3.0)
 
 ## Starting the IDE
 
@@ -9,6 +9,8 @@ cd /home/marco/PycharmProjects/CLIPSIDE
 
 A splash screen appears while modules load, then the main window opens.
 
+> **First run may be slow** (~2 minutes) while the RAG index is built from the CLIPS 6.4 documentation PDFs. Subsequent launches are instant.
+
 ---
 
 ## Interface Overview
@@ -18,7 +20,7 @@ A splash screen appears while modules load, then the main window opens.
 │ Explorer │    Editor (tabs)            │  Facts | Agenda | … │
 │          │                             │                     │
 │          │                             │  AI Assistant Chat  │
-│ 🤖 AI    │                             │                     │
+│ 🤖 AI    │                             │     [🔍 RAG]        │
 ├──────────┴─────────────────────────────┴─────────────────────┤
 │                    CLIPS Console (REPL)                      │
 └──────────────────────────────────────────────────────────────┘
@@ -26,15 +28,15 @@ A splash screen appears while modules load, then the main window opens.
 
 | Panel | Description |
 |---|---|
-| **Explorer** | Browse your filesystem; double-click a `.clp` file to open it. |
-| **AI Assistant** | Chat with the local model; generate code snippets. |
+| **Explorer** | Browse your filesystem; double-click a `.clp` file to open it. Right-click → "🗑 Delete" to remove files/folders. |
+| **AI Assistant** | Chat with the local model; optional RAG augmentation over CLIPS documentation. |
 | **Editor** | Multi-tab editor with syntax highlighting and close buttons (✖). |
 | **Inspector** | Live tabs for Facts, Agenda, and Instances. |
-| **Console** | Interactive CLIPS REPL. |
+| **Console** | Interactive CLIPS REPL with context directory indicator `[carpeta]`. |
 
 ---
 
-## Collapsible Panels (v0.2.0)
+## Collapsible Panels
 
 You can hide/show the side panels to give more room to the editor and console:
 
@@ -81,6 +83,22 @@ Use **Ctrl+B** or the 🔨 icon. This saves the current editor content to a temp
 - **Chat**: Type in the box and press `Ctrl+Enter`.
 - **Insert**: Click **Insert ↗** to paste the last code block from the AI directly into your editor.
 - **Streaming**: The AI responds in real-time.
+
+### RAG Mode (🔍 RAG)
+
+The AI Assistant can optionally augment its responses with relevant excerpts from the official CLIPS 6.4 documentation (Basic Programming Guide, Advanced Programming Guide, User's Guide, Installation Guide).
+
+- **Toggle**: Click the **🔍 RAG** button in the chat input row.
+  - **Blue** = enabled (default).
+  - **Grey** = disabled (the model answers from its training only).
+- **Indicator**: When RAG context is found for your question, a `📖 +docs` line appears in the chat.
+- **First use**: On first launch, the IDE indexes all 4 PDFs (~4400 chunks). This takes 1-2 minutes and happens in the background.
+- **How it works**: Your question is used to retrieve the 3 most relevant documentation excerpts. These are injected into the system prompt. The model decides whether to use them — if the excerpts are irrelevant, it ignores them.
+- **When to disable RAG**: For creative or open-ended questions (e.g., "design an expert system for X"), the documentation context may not help and can constrain the model. Disable RAG for maximum creativity.
+
+### Working Directory Context
+
+When you open a file from the Explorer or switch tabs, the REPL console shows the active directory in brackets: `[subfolder]` next to the `CLIPS>` prompt. All `(load "...")` commands resolve relative to that directory.
 
 ---
 

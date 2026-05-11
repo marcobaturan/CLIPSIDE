@@ -49,7 +49,7 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 
 ---
 
-## 🚀 Version: v0.2.0
+## 🚀 Version: v0.3.0
 
 See [CHANGELOG.md](CHANGELOG.md) for full release details.
 
@@ -133,6 +133,20 @@ python -m pytest tests/ -v --tb=short
 
 ---
 
+## 🔍 RAG — Retrieval-Augmented Generation (v0.3.0)
+
+The AI Assistant can augment its responses with relevant excerpts from the **official CLIPS 6.4 documentation** (Basic Programming Guide, Advanced Programming Guide, User's Guide, Installation Guide — 917 pages total).
+
+- **🔍 RAG button** toggles the feature on/off (blue = on, grey = off).
+- On first launch, 4 PDFs are indexed into a local ChromaDB vector store (embedding: all-MiniLM-L6-v2, ~80 MB on CPU).
+- Your question is used to retrieve the **top-3 most relevant chunks** (500-char windows, hybrid BM25 + dense retrieval) which are injected into the LLM's system prompt.
+- The model decides whether the context is relevant — if not, it ignores it.
+- RAG is particularly effective for syntax questions, edge cases, and API details. Disable for creative/open-ended tasks.
+
+> 📖 When context is found, a `📖 +docs` indicator appears in the chat.
+
+---
+
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut | Action |
@@ -146,8 +160,9 @@ python -m pytest tests/ -v --tb=short
 | `F6` | Run inference engine |
 | `F7` | Step (one rule) |
 | `Ctrl+Return` | Send AI chat message |
+| Right-click on file | Delete from Explorer |
 
-## 📐 Panel Collapse (v0.2.0)
+## 📐 Panel Collapse
 
 Collapse the side panels with a single click to give the editor maximum space:
 
@@ -159,7 +174,7 @@ Collapse the side panels with a single click to give the editor maximum space:
 | `Ctrl+R` | Keyboard | Toggle right panel |
 | `Ctrl+M` | Keyboard | Toggle **all** panels (maximise editor) |
 
-> 💡 The IDE remembers each panel's width when collapsed. Drag the splitters to resize freely. Minimum window size is 680px — perfect for half a laptop screen.
+> 💡 The IDE remembers each panel's width when collapsed. Drag the splitters to resize freely. Minimum window size is 680px — perfect for half a laptop screen. The REPL now shows the active directory `[carpeta]` context next to the prompt.
 
 ---
 

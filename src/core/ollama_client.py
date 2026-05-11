@@ -30,10 +30,17 @@ Always return complete, runnable CLIPS code."""
 
 
 def _build_messages(
-    history: list[dict], user_message: str
+    history: list[dict], user_message: str, rag_context: str = ""
 ) -> list[dict]:
-    """Assemble the full message list: system prompt + history + new message."""
-    messages = [{"role": "system", "content": CLIPS_SYSTEM_PROMPT}]
+    """Assemble the full message list: system prompt + history + new message.
+
+    If *rag_context* is non-empty, it is prepended to the system prompt
+    so the model can use it when relevant.
+    """
+    system = CLIPS_SYSTEM_PROMPT
+    if rag_context:
+        system = f"{rag_context}\n\n---\n\n{system}"
+    messages = [{"role": "system", "content": system}]
     messages.extend(history)
     messages.append({"role": "user", "content": user_message})
     return messages
@@ -44,6 +51,7 @@ def chat_stream(
     session_id: str,
     on_token: Callable[[str], None],
     context_window: int = 10,
+    rag_context: str = "",
 ) -> str:
     """
     Stream a chat response token-by-token via a callback.
@@ -51,7 +59,7 @@ def chat_stream(
     Saves the exchange to the session history and returns the full response.
     """
     history = sh.get_context_window(session_id, n=context_window)
-    messages = _build_messages(history, user_message)
+    messages = _build_messages(history, user_message, rag_context=rag_context)
 
     full_response_parts: list[str] = []
     try:

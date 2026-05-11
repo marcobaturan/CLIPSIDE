@@ -1,4 +1,8 @@
-"""AI assistant panel — Ollama chat with streaming and snippet insertion."""
+"""AI assistant panel — Ollama chat with streaming and snippet insertion.
+
+Optionally augmented with RAG (Retrieval-Augmented Generation) over
+the official CLIPS 6.4 documentation stored in src/assets/clips_docs/.
+"""
 
 import threading
 import customtkinter as ctk
@@ -7,13 +11,20 @@ from typing import Callable, Optional
 
 from src.core import ollama_client as ai
 from src.core import session_history as sh
+from src.core.rag import get_retriever
 
 
 class AiPanel(ctk.CTkFrame):
     """
     Right-side AI assistant panel.
+
     Provides a streaming chat interface and a snippet generator
     that inserts code directly into the active editor tab.
+
+    When RAG is enabled (toggle button), the user's question is
+    first used to retrieve relevant excerpts from the CLIPS
+    documentation. Those excerpts are injected into the system
+    prompt so the model can ground its answer on official docs.
     """
 
     def __init__(
@@ -28,8 +39,11 @@ class AiPanel(ctk.CTkFrame):
         self._show_header = show_header
         self._session_id = sh.new_session_id()
         self._last_snippet = ""
+        self._rag_enabled = True
+        self._rag_ready = False
         self._build()
         self._check_ollama()
+        self._init_rag()
 
     # ------------------------------------------------------------------
     # UI construction
@@ -87,6 +101,13 @@ class AiPanel(ctk.CTkFrame):
             command=self._clear_chat,
         ).pack(side="left")
 
+        self._rag_btn = ctk.CTkButton(
+            btn_row, text="🔍 RAG", width=60, height=26,
+            fg_color="#1F6FEB", hover_color="#388BFD",
+            command=self._toggle_rag,
+        )
+        self._rag_btn.pack(side="right", padx=(4, 0))
+
         self._chat_entry.bind("<Control-Return>", lambda _: self._send_chat())
 
         # Chat display area — fills the rest
@@ -104,6 +125,28 @@ class AiPanel(ctk.CTkFrame):
         self._chat_display.configure(yscrollcommand=scroll.set)
         scroll.pack(side="right", fill="y")
         self._chat_display.pack(fill="both", expand=True)
+
+    # ------------------------------------------------------------------
+    # RAG initialisation (background, non-blocking)
+    # ------------------------------------------------------------------
+
+    def _init_rag(self) -> None:
+        """Ensure the vector index exists. Runs in a thread so the UI stays responsive."""
+        def _work():
+            try:
+                retriever = get_retriever()
+                if not retriever.is_indexed():
+                    self._update_status("● Indexing CLIPS docs (first run)…", "#FFCB6B")
+                    retriever.index_documents()
+                self._rag_ready = True
+                self._update_status("● Ollama ready" if ai.check_ollama_available() else "● Ollama not running", "#00FF88" if ai.check_ollama_available() else "#FF5370")
+            except Exception as exc:
+                self._rag_ready = False
+                self._update_status(f"● RAG unavailable: {exc}", "#FF5370")
+        threading.Thread(target=_work, daemon=True).start()
+
+    def _update_status(self, text: str, colour: str) -> None:
+        self._status_label.configure(text=text, text_color=colour)
 
     # ------------------------------------------------------------------
     # Ollama availability
@@ -134,6 +177,15 @@ class AiPanel(ctk.CTkFrame):
         if self._last_snippet:
             self._on_insert(self._last_snippet)
 
+    def _toggle_rag(self) -> None:
+        """Enable / disable RAG context injection."""
+        self._rag_enabled = not self._rag_enabled
+        colour = "#1F6FEB" if self._rag_enabled else "#454D59"
+        label = "🔍 RAG" if self._rag_enabled else "🔍 RAG"
+        self._rag_btn.configure(fg_color=colour, hover_color=colour)
+        status = "RAG enabled" if self._rag_enabled else "RAG disabled"
+        self._append_chat(f"[{status}]\n", "system")
+
     def _send_chat(self) -> None:
         """Stream a chat response from the model."""
         message = self._chat_entry.get("1.0", "end-1c").strip()
@@ -144,7 +196,18 @@ class AiPanel(ctk.CTkFrame):
         self._append_chat("Assistant: ", "assistant")
 
         self._last_snippet = "" # Reset for current response
-        
+
+        # Retrieve RAG context if enabled and ready
+        rag_context = ""
+        if self._rag_enabled and self._rag_ready:
+            try:
+                retriever = get_retriever()
+                rag_context = retriever.format_context(message)
+                if rag_context:
+                    self._append_chat("📖 +docs\n", "system")
+            except Exception:
+                pass  # Silently degrade if RAG fails
+
         def _on_token(tok: str):
             self._append_chat(tok, "assistant")
             self._last_snippet += tok # Collect full response
@@ -154,6 +217,7 @@ class AiPanel(ctk.CTkFrame):
                 user_message=message,
                 session_id=self._session_id,
                 on_token=_on_token,
+                rag_context=rag_context,
             )
             self._append_chat("\n\n", "assistant")
             # After stream, try to extract code block if present
