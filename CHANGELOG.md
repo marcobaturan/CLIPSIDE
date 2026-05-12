@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-05-12
+
+### Fixed
+- **CLIPS download URL in setup script**: Fixed broken SourceForge URL — version directory was `6.41` instead of `6.4.1`, and zip suffix was `6_41` instead of `641`. The setup script now correctly resolves to `clips_core_source_641.zip`.
+
 ## [0.3.0] - 2026-05-11
 
 ### Added

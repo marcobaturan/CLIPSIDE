@@ -1,4 +1,4 @@
-# CLIPSIDE — User Manual (v0.3.0)
+# CLIPSIDE — User Manual (v0.3.1)
 
 ## Starting the IDE
 

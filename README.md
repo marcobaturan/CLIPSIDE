@@ -49,7 +49,7 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 
 ---
 
-## 🚀 Version: v0.3.0
+## 🚀 Version: v0.3.1
 
 See [CHANGELOG.md](CHANGELOG.md) for full release details.
 
@@ -133,7 +133,7 @@ python -m pytest tests/ -v --tb=short
 
 ---
 
-## 🔍 RAG — Retrieval-Augmented Generation (v0.3.0)
+## 🔍 RAG — Retrieval-Augmented Generation (v0.3.1)
 
 The AI Assistant can augment its responses with relevant excerpts from the **official CLIPS 6.4 documentation** (Basic Programming Guide, Advanced Programming Guide, User's Guide, Installation Guide — 917 pages total).
 

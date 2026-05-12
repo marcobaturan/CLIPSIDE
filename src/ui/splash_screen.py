@@ -56,7 +56,7 @@ class SplashScreen(ctk.CTkToplevel):
 
         ctk.CTkLabel(
             self,
-            text="v0.3.0",
+            text="v0.3.1",
             font=ctk.CTkFont(size=10),
             text_color="#1F6FEB",
         ).pack(pady=(0, 16))
