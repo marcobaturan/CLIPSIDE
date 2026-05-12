@@ -5,8 +5,9 @@ set -e
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VENV="$PROJECT_DIR/.venv"
-CLIPS_VERSION="6.41"
-CLIPS_URL="https://sourceforge.net/projects/clipsrules/files/CLIPS/${CLIPS_VERSION}/clips_core_source_${CLIPS_VERSION//./_}.zip/download"
+CLIPS_VERSION="6.4.1"
+CLIPS_FILE_VER="${CLIPS_VERSION//./}"
+CLIPS_URL="https://sourceforge.net/projects/clipsrules/files/CLIPS/${CLIPS_VERSION}/clips_core_source_${CLIPS_FILE_VER}.zip/download"
 BUILD_DIR="/tmp/clips_build"
 
 echo "=== CLIPSIDE Setup ==="
