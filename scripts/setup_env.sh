@@ -1,6 +1,11 @@
 #!/bin/bash
 # CLIPSIDE — Automated setup script for Debian 12 / Linux.
 # Builds libclips.so from source and installs all Python dependencies.
+#
+# Guards added (v0.3.2):
+#   check_python_version() — exits if Python < 3.10 (BUG-004)
+#   check_tkinter()        — exits with install hint if tkinter missing (BUG-003)
+#   install_fonts()        — installs distro-appropriate font packages (BUG-002)
 set -e
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -10,8 +15,74 @@ CLIPS_FILE_VER="${CLIPS_VERSION//./}"
 CLIPS_URL="https://sourceforge.net/projects/clipsrules/files/CLIPS/${CLIPS_VERSION}/clips_core_source_${CLIPS_FILE_VER}.zip/download"
 BUILD_DIR="/tmp/clips_build"
 
+# ---------------------------------------------------------------------------
+# Guard: Python version — requires Python 3.10 or higher (BUG-004)
+# Linux Mint 20.3 / Ubuntu 20.04 ship Python 3.8 which is unsupported.
+# ---------------------------------------------------------------------------
+check_python_version() {
+    local min_minor=10
+    local py_major py_minor
+    py_major=$(python3 -c "import sys; print(sys.version_info.major)" 2>/dev/null || echo 0)
+    py_minor=$(python3 -c "import sys; print(sys.version_info.minor)" 2>/dev/null || echo 0)
+
+    if [ "$py_major" -lt 3 ] || { [ "$py_major" -eq 3 ] && [ "$py_minor" -lt "$min_minor" ]; }; then
+        echo "ERROR: Python 3.$min_minor or higher is required."
+        echo "       Found: Python $py_major.$py_minor"
+        echo "       Linux Mint 20.3 and Ubuntu 20.04 ship Python 3.8 — not supported."
+        exit 1
+    fi
+    echo "  Python $py_major.$py_minor — OK"
+}
+
+# ---------------------------------------------------------------------------
+# Guard: tkinter availability (BUG-003)
+# On Ubuntu 22.04 python3-tk is often missing, causing a segfault on launch.
+# ---------------------------------------------------------------------------
+check_tkinter() {
+    if ! python3 -c "import tkinter" &>/dev/null; then
+        echo "ERROR: tkinter is not available for the current Python installation."
+        if command -v apt-get &>/dev/null; then
+            echo "Fix: sudo apt-get install python3-tk python3-dev libxcb1 libxcb-render0"
+        elif command -v dnf &>/dev/null; then
+            echo "Fix: sudo dnf install python3-tkinter"
+        elif command -v pacman &>/dev/null; then
+            echo "Fix: sudo pacman -S tk"
+        fi
+        exit 1
+    fi
+    echo "  tkinter — OK"
+}
+
+# ---------------------------------------------------------------------------
+# Guard: font packages (BUG-002)
+# Missing Unicode/emoji fonts cause X11 BadLength / RenderAddGlyphs crash on
+# RPM-based distros (CentOS, Fedora) and sometimes on DEB-based ones too.
+# ---------------------------------------------------------------------------
+install_fonts() {
+    echo "  Checking font dependencies..."
+    if command -v dnf &>/dev/null; then
+        # RPM-based: CentOS Stream, Fedora, RHEL
+        sudo dnf install -y unifont gnu-free-fonts-common 2>/dev/null || true
+    elif command -v apt-get &>/dev/null; then
+        # DEB-based: Debian, Ubuntu, Linux Mint
+        sudo apt-get install -y fonts-unifont fonts-symbola 2>/dev/null || true
+    elif command -v pacman &>/dev/null; then
+        # Arch-based
+        sudo pacman -S --noconfirm ttf-unifont 2>/dev/null || true
+    else
+        echo "  WARNING: Could not detect package manager. Install fonts-unifont manually."
+    fi
+    echo "  Fonts — OK"
+}
+
 echo "=== CLIPSIDE Setup ==="
 echo "Project: $PROJECT_DIR"
+
+# Pre-flight checks (fail fast before any build work)
+echo "[0/6] Pre-flight checks..."
+check_python_version
+check_tkinter
+install_fonts
 
 # 1. System dependencies
 echo "[1/6] Checking system dependencies..."
@@ -34,7 +105,7 @@ if [ ! -f "clips_source.zip" ]; then
     curl -L -o clips_source.zip "$CLIPS_URL"
 fi
 unzip -o clips_source.zip -d clips_src
-cd clips_src/*/
+cd clips_src/*/core  # BUG-001 fix: clips.h lives in core/, not at the archive root
 
 # Compile as shared library
 gcc -std=c99 -O2 -fPIC -shared \

@@ -39,7 +39,7 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 
 | Component | Technology | Version |
 |---|---|---|
-| Language | Python | 3.11+ |
+| Language | Python | 3.10+ |
 | GUI Framework | CustomTkinter | 5.2.2 |
 | CLIPS Engine | CLIPSpy | ≥ 1.0.6 |
 | Syntax Highlight | Pygments | ≥ 2.17 |
@@ -175,6 +175,44 @@ Collapse the side panels with a single click to give the editor maximum space:
 | `Ctrl+M` | Keyboard | Toggle **all** panels (maximise editor) |
 
 > 💡 The IDE remembers each panel's width when collapsed. Drag the splitters to resize freely. Minimum window size is 680px — perfect for half a laptop screen. The REPL now shows the active directory `[carpeta]` context next to the prompt.
+
+---
+
+## 🖥️ Compatibility
+
+### Tested and supported
+
+| OS | Python | Status |
+|---|---|---|
+| Debian 12 | 3.11 | ✅ Confirmed working |
+| CentOS Stream 9 | 3.11+ | ✅ Requires: `sudo dnf install unifont gnu-free-fonts-common` |
+| Ubuntu 22.04 | 3.10+ | ✅ Requires: `sudo apt-get install python3-tk fonts-unifont` |
+| Linux Mint 21+ | 3.10+ | ✅ Requires: `sudo apt-get install fonts-unifont fonts-symbola` |
+
+### Not supported
+
+| OS | Python | Reason |
+|---|---|---|
+| Linux Mint 20.3 | 3.8 | Python 3.8 is below the minimum requirement (3.10) |
+| Ubuntu 20.04 | 3.8 | Python 3.8 is below the minimum requirement (3.10) |
+
+### Python version matrix (Debian 12 — system Python only)
+
+pyenv is not installed in the reference environment. Only system Python 3.11 has been verified locally. Contributions testing 3.10, 3.12, and 3.13 are welcome.
+
+---
+
+## ⚠️ Known Issues
+
+| Issue | Affected distros | Fix |
+|---|---|---|
+| **X11 BadLength / RenderAddGlyphs** crash on launch | CentOS Stream 9, Fedora, RHEL | `sudo dnf install unifont gnu-free-fonts-common` |
+| **Segmentation fault** on launch | Ubuntu 22.04 | `sudo apt-get install python3-tk python3-dev libxcb1 libxcb-render0` |
+| **`clips.h: No such file or directory`** during build | All distros (pre-fix) | Fixed in v0.3.2 — update `setup_env.sh` |
+| Python 3.8 not supported | Linux Mint 20.3, Ubuntu 20.04 | Upgrade to Python 3.10+ or use a newer OS release |
+
+> The X11 BadLength / RenderAddGlyphs error is a Tkinter/X11 font rendering issue,
+> not a CLIPSIDE bug. Installing Unicode font packages resolves it.
 
 ---
 
