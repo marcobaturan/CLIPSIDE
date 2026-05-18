@@ -34,7 +34,7 @@ class TestEngineControl:
         assert engine.get_facts() == []
 
     def test_clear_removes_rules_and_facts(self, engine: ClipsEngine) -> None:
-        engine.build("(defrule test-rule (test) => (printout t \"fired\" crlf))")
+        engine.build("(defrule test-rule (trigger) => (printout t \"fired\" crlf))")
         engine.clear()
         assert engine.get_rules() == []
 

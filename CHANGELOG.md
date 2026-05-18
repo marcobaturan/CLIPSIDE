@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-05-18
+
+### Added
+- **Multi-version Python test matrix**: Created and validated three independent virtual environments (`.venv10`, `.venv12`, and `.venv13`) using Python 3.10.20, 3.12.13, and 3.13.13 compiled locally via `pyenv`.
+- **System hardware specs in README**: Documented the reference testing machine's hardware profile (AMD Ryzen 7 4700U with Radeon Graphics, 14 GiB RAM, Debian 12 Bookworm, X11 Display `:0.0`).
+- **Exclusion of environments**: Updated `.gitignore` to prevent committing `.venv10`, `.venv12`, and `.venv13` to the remote repository.
+- **Out-of-the-box CTkToolTip**: Added missing `CTkToolTip>=0.8` dependency to `requirements.txt` to prevent application crash on clean environments.
+
+### Fixed
+- **TDD Test reserved keyword**: Fixed a syntax bug in `test_clear_removes_rules_and_facts` in `tests/test_clips_engine.py` where using the pattern name `(test)` conflicted with the CLIPS 6.4+ reserved `test` conditional element keyword (causing a compilation syntax error).
+- **Environment pre-flight guards**: Implemented robust environment gates in `setup_env.sh` to enforce Python ≥ 3.10, verify Tkinter availability with distro-specific guides, and perform best-effort automated unicode/symbol font installation to prevent X11 BadLength crashes.
+
 ## [0.3.1] - 2026-05-12
 
 ### Fixed

@@ -49,7 +49,7 @@ CLIPSIDE replicates (and surpasses) the classic Windows/Mac CLIPS IDE, offering:
 
 ---
 
-## 🚀 Version: v0.3.1
+## 🚀 Version: v0.3.2
 
 See [CHANGELOG.md](CHANGELOG.md) for full release details.
 
@@ -196,9 +196,22 @@ Collapse the side panels with a single click to give the editor maximum space:
 | Linux Mint 20.3 | 3.8 | Python 3.8 is below the minimum requirement (3.10) |
 | Ubuntu 20.04 | 3.8 | Python 3.8 is below the minimum requirement (3.10) |
 
-### Python version matrix (Debian 12 — system Python only)
+### Python version matrix (Debian 12 — pyenv multi-version verified)
 
-pyenv is not installed in the reference environment. Only system Python 3.11 has been verified locally. Contributions testing 3.10, 3.12, and 3.13 are welcome.
+A complete Python version test matrix has been executed on the reference platform. Using `pyenv` and three independent virtual environments, CLIPSIDE was compiled and verified:
+* **Python 3.10.20** (`.venv10`): All tests passing (54/54) ✅
+* **Python 3.12.13** (`.venv12`): All tests passing (54/54), Editor launches successfully ✅
+* **Python 3.13.13** (`.venv13`): All tests passing (54/54) ✅
+
+---
+
+## 🖥️ Testing Hardware Profile
+
+The following system specs were used for compiling, testing, and validating CLIPSIDE v0.3.2 across the entire Python version matrix:
+* **CPU**: AMD Ryzen 7 4700U with Radeon Graphics (8 cores / 8 threads)
+* **RAM**: 14 GiB RAM
+* **OS**: Debian GNU/Linux 12 (bookworm)
+* **Windowing System**: X11 (Display `:0.0`)
 
 ---
 

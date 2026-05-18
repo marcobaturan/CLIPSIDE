@@ -1,6 +1,9 @@
 __pycache__/
 *.pyc
 .venv/
+.venv10/
+.venv12/
+.venv13/
 .idea/
 .pytest_cache/
 .rag_index/
